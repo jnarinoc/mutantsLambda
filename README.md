@@ -19,6 +19,9 @@ con método POST, enviando en el body la secuencia de ADN así:
 Para obtener el informe:
 
 Ejecutar un CURL al endpoint https://ocme9y5jbb.execute-api.us-east-1.amazonaws.com/v1/stats
-
 con métofo GET.
+
+Comando para ejecutar pruebas:
+npm install && npm run coverage
+
 
