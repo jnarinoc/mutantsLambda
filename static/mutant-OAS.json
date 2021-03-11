@@ -1,0 +1,275 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "mutantsAPI",
+        "version": "1.0.0",
+        "description": "Determine mutants API"
+    },
+    "servers": [
+        {
+            "url": "Colocar PAth"
+        }
+    ],
+    "paths": {
+        "/stats" : {
+            "summary": "stats",
+            "description": "obtener datos de calculos de mutantes pasados",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMutant"
+                                },
+                                "examples": {
+                                    "ResponseMutant": {
+                                        "value": {
+                                            "Description": "La persona es mutante"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Answer valid "
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MsgRsErrorDef"
+                                },
+                                "examples": {
+                                    "MsgRsErrorDefExample": {
+                                        "value": {
+                                            "Status": {
+                                                "ServerStatusCode": "500",
+                                                "Severity": "Error",
+                                                "StatusCode": 500,
+                                                "StatusDesc": "Problems Status 500"
+                                            },
+                                            "EndDt": "2018-02-10T09:30Z"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "500 response"
+                    }
+                }
+            },
+            "description": "Recurso que permite determinar stats de mutantes",
+            "x-amazon-apigateway-request-validator": "Validate body, query string parameters, and headers",
+            "x-amazon-apigateway-integration": {
+                "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:723173595666:function:mutants/invocations",
+                "responses": {
+                    "default": {
+                        "statusCode": "200"
+                    }
+                },
+                "passthroughBehavior": "when_no_match",
+                "httpMethod": "POST",
+                "contentHandling": "CONVERT_TO_TEXT",
+                "type": "aws_proxy"
+            }
+        },
+        "/mutant": {
+            "summary": "mutant",
+            "description": "Api para saber si una persona es mutante",
+            "post": {
+                "requestBody": {
+                    "description": "bases",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MutantReqDef"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMutant"
+                                },
+                                "examples": {
+                                    "ResponseMutant": {
+                                        "value": {
+                                            "Description": "La persona es mutante"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Answer valid"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MsgRsErrorDef"
+                                },
+                                "examples": {
+                                    "MsgRsErrorDefExample": {
+                                        "value": {
+                                            "Status": {
+                                                "ServerStatusCode": "400",
+                                                "Severity": "Error",
+                                                "StatusCode": 400,
+                                                "StatusDesc": "Problems Status 400"
+                                            },
+                                            "EndDt": "2018-02-10T09:30Z"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "400 Response"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MsgRsErrorDef"
+                                },
+                                "examples": {
+                                    "MsgRsErrorDefExample": {
+                                        "value": {
+                                            "Status": {
+                                                "ServerStatusCode": "500",
+                                                "Severity": "Error",
+                                                "StatusCode": 500,
+                                                "StatusDesc": "Problems Status 500"
+                                            },
+                                            "EndDt": "2018-02-10T09:30Z"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "500 response"
+                    }
+                },
+                "description": "Recurso que permite determinar si una persona es un mutante",
+                "x-amazon-apigateway-request-validator": "Validate body, query string parameters, and headers",
+                "x-amazon-apigateway-integration": {
+                    "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:723173595666:function:mutants/invocations",
+                    "responses": {
+                        "default": {
+                            "statusCode": "200"
+                        }
+                    },
+                    "passthroughBehavior": "when_no_match",
+                    "httpMethod": "POST",
+                    "contentHandling": "CONVERT_TO_TEXT",
+                    "type": "aws_proxy"
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "MutantReqDef": {
+                "description": "Request mutante",
+                "required": [
+                    "dna"
+                ],
+                "type": "object",
+                "properties": {
+                    "dna":{
+                        "description":"listado de bases hidrogenadas",
+                        "type":"array",
+                        "maxItems": 100,
+                        "items":{
+                            "minLength": 1,
+                            "pattern" : "^[AGCT]*$",
+                            "type":"string"
+                        }
+                    }
+                }
+            },
+            "ResponseMutant": {
+                "description": "Respuesta mutante",
+                "required": [
+                    "Description"
+                ],
+                "type": "object",
+                "properties": {
+                    "Description": {
+                        "description": "Descripción en general para determinar si una persona es mutante",
+                        "maxLength": 600,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9]*$",
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "example": {
+                    "Description": "La persona es mutante"
+                }
+            },
+            "Status": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "ServerStatusCode": {
+                        "description": "Códigos de error string",
+                        "maxLength": 10,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9]*$",
+                        "type": "string"
+                    },
+                    "Severity": {
+                        "description": "Severity Error",
+                        "maxLength": 10,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9]*$",
+                        "type": "string"
+                    },
+                    "StatusCode": {
+                        "format": "int32",
+                        "description": "Códigos de error numérico",
+                        "maximum": 600,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "StatusDesc": {
+                        "description": "Descripción del error",
+                        "maxLength": 200,
+                        "minLength": 1,
+                        "pattern": "^[a-zA-Z0-9]*$",
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "MsgRsErrorDef": {
+                "title": "Root Type for MsgRsErrorDef",
+                "description": "Root Type for MsgRsErrorDef",
+                "type": "object",
+                "properties": {
+                    "Status": {
+                        "$ref": "#/components/schemas/Status"
+                    },
+                    "EndDt": {
+                        "format": "date-time",
+                        "description": "Fecha Error",
+                        "maxLength": 20,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    "x-amazon-apigateway-request-validators": {
+        "Validate body, query string parameters, and headers": {
+            "validateRequestParameters": true,
+            "validateRequestBody": true
+        }
+    }
+}
